@@ -1,5 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#06070c">
 <title>os!strike</title>
 <meta name="description" content="osu! on a giant curved screen floating in space, played in first person with a Counter-Strike crosshair and guns. Free download for Windows.">
+<meta property="og:title" content="os!strike">
+<meta property="og:description" content="osu! on a giant curved screen floating in space, played in first person with a CS crosshair and guns. Free for Windows.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="img/gameplay.jpg">
+<link rel="icon" href="img/icon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;1,800&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -30,6 +41,8 @@
 }
 
 * { box-sizing: border-box; }
+body { margin: 0; }
+img { max-width: 100%; }
 [hidden] { display: none !important; }
 html { scroll-behavior: smooth; scroll-padding-top: 84px; }
 body {
@@ -454,6 +467,8 @@ footer p { margin: 0; max-width: 70ch; }
   .btn-dl, .header-dl, .weapon .pic img { transition: none; }
 }
 </style>
+</head>
+<body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
@@ -798,7 +813,7 @@ footer p { margin: 0; max-width: 70ch; }
       <p>Free download for Windows. Extract the zip, open <code>os!strike.exe</code>, shoot <b>PLAY</b>.</p>
       <a class="btn-dl" data-download href="#download">
         <svg class="dl-icon" aria-hidden="true"><use href="#i-dl"/></svg>
-        <span><b>Download os!strike</b><small>os!strike-1.0-windows.zip · 196 MB</small></span>
+        <span><b>Download os!strike</b><small>os.strike-1.0-windows.zip · 196 MB</small></span>
       </a>
       <p class="pending" id="pendingNote" hidden>The download link is being set up. Check back soon.</p>
       <div class="hash"><span>SHA-256</span><code>e042eecb65a678c85002fc01c55d32251fcc1daab9df5c011460850a0edaabc5</code></div>
@@ -815,7 +830,7 @@ footer p { margin: 0; max-width: 70ch; }
 
 <script>
 // Where the zip is hosted. Every download button uses this link.
-const DOWNLOAD_URL = "";
+const DOWNLOAD_URL = "https://github.com/Gallyzito/os-strike/releases/download/v1.0/os.strike-1.0-windows.zip";
 
 (() => {
   const links = document.querySelectorAll("[data-download]");
@@ -836,3 +851,5 @@ const DOWNLOAD_URL = "";
 })();
 
 </script>
+</body>
+</html>
