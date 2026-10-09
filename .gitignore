@@ -1,0 +1,29 @@
+# Godot (gerado; tem caminhos do teu PC)
+.godot/
+*.translation
+export_credentials.cfg
+
+# Versões geradas: vão para as Releases do GitHub, não para o código
+/dist/
+*.zip
+*.exe
+*.pck
+
+# Conteúdo de terceiros que não é meu para distribuir no código
+# (mapas/músicas do osu!, skins, modelos 3D originais). O jogo pronto
+# já os leva nas Releases. A barra inicial prende cada regra à raiz do
+# projeto (assets/models, que o jogo usa, continua incluída).
+/maps/
+/skins/
+/models/
+/sounds/
+/old/
+*.blend1
+
+# Ficheiros do sistema e editores
+.vs/
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+*.tmp

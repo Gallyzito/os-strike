@@ -1,0 +1,419 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/main_menu/main_menu.gd" id="1_menu"]
+[ext_resource type="Script" path="res://scenes/main_menu/music_word.gd" id="2_word"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="3_player"]
+[ext_resource type="Shader" path="res://shaders/spectrum_terrain.gdshader" id="4_terrain"]
+[ext_resource type="Script" path="res://scenes/main_menu/spectrum_terrain.gd" id="5_terrain"]
+[ext_resource type="Shader" path="res://shaders/grid.gdshader" id="6_grid"]
+[ext_resource type="Shader" path="res://shaders/spark.gdshader" id="7_spark"]
+[ext_resource type="Shader" path="res://shaders/screen_fx.gdshader" id="8_fx"]
+[ext_resource type="Script" path="res://scenes/main_menu/target_reticle.gd" id="9_reticle"]
+[ext_resource type="Script" path="res://scripts/ui/menu_item.gd" id="10_item"]
+[ext_resource type="Script" path="res://scenes/main_menu/kill_feed.gd" id="11_feed"]
+[ext_resource type="Script" path="res://scripts/ui/crosshair_cursor.gd" id="12_cursor"]
+[ext_resource type="Script" path="res://scenes/main_menu/options_panel.gd" id="16_options"]
+[ext_resource type="Script" path="res://scenes/main_menu/lobby_arena.gd" id="17_arena"]
+[ext_resource type="Script" path="res://scenes/main_menu/map_select.gd" id="18_maps"]
+
+[sub_resource type="Environment" id="Environment_menu"]
+background_mode = 1
+background_color = Color(0.012, 0.013, 0.018, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.3, 0.32, 0.38, 1)
+ambient_light_energy = 0.35
+tonemap_mode = 2
+tonemap_exposure = 1.1
+tonemap_white = 6.0
+glow_enabled = true
+glow_intensity = 0.9
+glow_strength = 1.0
+glow_bloom = 0.06
+glow_blend_mode = 1
+glow_hdr_threshold = 1.0
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.012
+volumetric_fog_albedo = Color(0.9, 0.9, 1, 1)
+volumetric_fog_anisotropy = 0.55
+volumetric_fog_length = 48.0
+volumetric_fog_ambient_inject = 0.0
+adjustment_enabled = true
+adjustment_contrast = 1.1
+adjustment_saturation = 1.1
+
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_terrain"]
+render_priority = 0
+shader = ExtResource("4_terrain")
+shader_parameter/max_height = 3.0
+shader_parameter/glow = 2.5
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_floor"]
+render_priority = 0
+shader = ExtResource("6_grid")
+shader_parameter/base_color = Color(0.012, 0.013, 0.018, 1)
+shader_parameter/line_color = Color(0.16, 0.2, 0.28, 1)
+shader_parameter/cells = Vector2(84, 84)
+shader_parameter/scroll = 0.0
+shader_parameter/pulse = 0.0
+shader_parameter/fade_near = 6.0
+shader_parameter/fade_far = 45.0
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_floor"]
+size = Vector2(160, 160)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_dust"]
+emission_shape = 3
+emission_box_extents = Vector3(16, 6, 8)
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 0.05
+initial_velocity_max = 0.2
+gravity = Vector3(0, 0.03, 0)
+scale_min = 0.4
+scale_max = 1.2
+color = Color(1, 0.7, 0.4, 0.35)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dust"]
+render_priority = 0
+shader = ExtResource("7_spark")
+shader_parameter/intensity = 1.2
+
+[sub_resource type="QuadMesh" id="QuadMesh_dust"]
+material = SubResource("ShaderMaterial_dust")
+size = Vector2(0.035, 0.035)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fx"]
+shader = ExtResource("8_fx")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_toast"]
+bg_color = Color(0, 0, 0, 0.72)
+border_width_top = 2
+border_width_bottom = 2
+border_color = Color(1, 0.62, 0.11, 1)
+
+[node name="MainMenu" type="Node3D"]
+script = ExtResource("1_menu")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_menu")
+
+[node name="Player" parent="." instance=ExtResource("3_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 7)
+
+[node name="Arena" type="StaticBody3D" parent="."]
+script = ExtResource("17_arena")
+
+[node name="Words" type="Node3D" parent="."]
+
+[node name="Play" type="Node3D" parent="Words"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, -2.5)
+script = ExtResource("2_word")
+text = "PLAY"
+hint = "SHOOT TO PLAY"
+color = Color(1, 0.62, 0.11, 1)
+cube = 0.2
+
+[node name="Options" type="Node3D" parent="Words"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.6, 0.9, 0.5)
+script = ExtResource("2_word")
+text = "OPTIONS"
+hint = "SHOOT TO OPEN OPTIONS"
+color = Color(0.42, 0.62, 0.95, 1)
+cube = 0.095
+
+[node name="Quit" type="Node3D" parent="Words"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.6, 0.9, 0.5)
+script = ExtResource("2_word")
+text = "QUIT"
+hint = "SHOOT TWICE TO QUIT"
+color = Color(0.92, 0.2, 0.2, 1)
+cube = 0.12
+
+[node name="Stage" type="Node3D" parent="."]
+
+[node name="Terrain" type="MultiMeshInstance3D" parent="Stage"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.4, -2.5)
+cast_shadow = 0
+material_override = SubResource("ShaderMaterial_terrain")
+script = ExtResource("5_terrain")
+
+[node name="Floor" type="MeshInstance3D" parent="Stage"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.42, -30)
+cast_shadow = 0
+material_override = SubResource("ShaderMaterial_floor")
+mesh = SubResource("PlaneMesh_floor")
+
+[node name="BeamT" type="SpotLight3D" parent="Stage"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 8, -11)
+light_color = Color(1, 0.62, 0.11, 1)
+light_energy = 3.0
+light_volumetric_fog_energy = 12.0
+spot_range = 40.0
+spot_angle = 15.0
+
+[node name="BeamCT" type="SpotLight3D" parent="Stage"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 8, -12)
+light_color = Color(0.42, 0.62, 0.95, 1)
+light_energy = 3.0
+light_volumetric_fog_energy = 12.0
+spot_range = 40.0
+spot_angle = 15.0
+
+[node name="Dust" type="GPUParticles3D" parent="Stage"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -8)
+cast_shadow = 0
+amount = 200
+lifetime = 14.0
+preprocess = 14.0
+visibility_aabb = AABB(-18, -8, -10, 36, 16, 20)
+process_material = SubResource("ParticleProcessMaterial_dust")
+draw_pass_1 = SubResource("QuadMesh_dust")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Root" type="Control" parent="UI"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ScreenFX" type="ColorRect" parent="UI/Root"]
+material = SubResource("ShaderMaterial_fx")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Reticle" type="Control" parent="UI/Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("9_reticle")
+
+[node name="Logo" type="RichTextLabel" parent="UI/Root"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 40.0
+offset_top = 24.0
+offset_right = 500.0
+offset_bottom = 110.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.95, 0.95, 0.92, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_y = 4
+theme_override_font_sizes/normal_font_size = 72
+bbcode_enabled = true
+text = "os[color=#ff9e1c]![/color]strike"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="KillFeed" type="VBoxContainer" parent="UI/Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -560.0
+offset_top = 28.0
+offset_right = -28.0
+offset_bottom = 260.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_constants/separation = 6
+script = ExtResource("11_feed")
+
+[node name="NowPlaying" type="VBoxContainer" parent="UI/Root"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = -170.0
+offset_right = 400.0
+offset_bottom = -62.0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/separation = 2
+alignment = 2
+
+[node name="NowPlayingCaption" type="Label" parent="UI/Root/NowPlaying"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.62, 0.11, 1)
+theme_override_font_sizes/font_size = 12
+text = "♪  NOW PLAYING"
+
+[node name="SongTitle" type="Label" parent="UI/Root/NowPlaying"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "INTO THE VOID"
+
+[node name="SongArtist" type="Label" parent="UI/Root/NowPlaying"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.93, 0.9, 0.55)
+theme_override_font_sizes/font_size = 14
+text = "Artist"
+
+[node name="ProgressRow" type="HBoxContainer" parent="UI/Root/NowPlaying"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 12
+
+[node name="SongProgress" type="ProgressBar" parent="UI/Root/NowPlaying/ProgressRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+mouse_filter = 2
+show_percentage = false
+
+[node name="SongTime" type="Label" parent="UI/Root/NowPlaying/ProgressRow"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.93, 0.93, 0.9, 0.55)
+theme_override_font_sizes/font_size = 12
+text = "0:00 / 0:00"
+
+[node name="Hints" type="Label" parent="UI/Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = -46.0
+offset_right = 900.0
+offset_bottom = -24.0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.93, 0.93, 0.9, 0.4)
+theme_override_font_sizes/font_size = 12
+text = "[MOUSE] AIM   [CLICK] SHOOT   [ESC] OPTIONS"
+
+[node name="Toast" type="Control" parent="UI/Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 150.0
+offset_bottom = 210.0
+grow_horizontal = 2
+mouse_filter = 2
+
+[node name="ToastBand" type="Panel" parent="UI/Root/Toast"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_toast")
+
+[node name="ToastLabel" type="Label" parent="UI/Root/Toast"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0.75, 0.4, 1)
+theme_override_font_sizes/font_size = 30
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Dim" type="ColorRect" parent="UI/Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.01, 0.012, 0.016, 0.62)
+
+[node name="OptionsPanel" type="PanelContainer" parent="UI/Root"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(660, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -330.0
+offset_top = -270.0
+offset_right = 330.0
+offset_bottom = 270.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("16_options")
+
+[node name="VBox" type="VBoxContainer" parent="UI/Root/OptionsPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="OptionsTitle" type="Label" parent="UI/Root/OptionsPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 44
+text = "OPTIONS"
+
+[node name="BackItem" type="Button" parent="UI/Root/OptionsPanel/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 56)
+layout_mode = 2
+script = ExtResource("10_item")
+key_label = "ESC"
+title = "BACK"
+subtitle = ""
+
+[node name="MapSelect" type="Control" parent="UI/Root"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("18_maps")
+
+[node name="CursorLayer" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="Crosshair" type="Control" parent="CursorLayer"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+script = ExtResource("12_cursor")
+
+[node name="FlashLayer" type="CanvasLayer" parent="."]
+layer = 110
+
+[node name="Flash" type="ColorRect" parent="FlashLayer"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

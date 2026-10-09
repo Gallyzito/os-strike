@@ -1,0 +1,43 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="os!trike"
+run/main_scene="res://scenes/main_menu/main_menu.tscn"
+config/features=PackedStringArray("4.7", "Forward Plus")
+config/icon="res://icon.svg"
+config/windows_native_icon="res://icon.ico"
+
+[autoload]
+
+Settings="*res://scripts/autoload/settings.gd"
+AudioManager="*res://scripts/autoload/audio_manager.gd"
+Game="*res://scripts/autoload/game.gd"
+DiscordPresence="*res://scripts/autoload/discord_presence.gd"
+PerfOverlay="*res://scripts/autoload/perf_overlay.gd"
+Loading="*res://scripts/autoload/loading.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[rendering]
+
+environment/defaults/default_clear_color=Color(0.02, 0.024, 0.032, 1)
+
+rendering_device/driver.windows="d3d12"

@@ -1,0 +1,128 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/game/osu_game.gd" id="1_game"]
+[ext_resource type="Script" path="res://scenes/game/curved_screen.gd" id="2_screen"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="3_player"]
+[ext_resource type="Script" path="res://scenes/game/osu_screen.gd" id="4_view"]
+[ext_resource type="Shader" path="res://shaders/space_sky.gdshader" id="5_sky"]
+[ext_resource type="Script" path="res://scripts/ui/crosshair_cursor.gd" id="7_cursor"]
+[ext_resource type="Shader" path="res://shaders/spark.gdshader" id="8_spark"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sky"]
+shader = ExtResource("5_sky")
+
+[sub_resource type="Sky" id="Sky_space"]
+sky_material = SubResource("ShaderMaterial_sky")
+radiance_size = 1
+
+[sub_resource type="Environment" id="Environment_space"]
+background_mode = 2
+sky = SubResource("Sky_space")
+ambient_light_source = 2
+ambient_light_color = Color(0.32, 0.38, 0.52, 1)
+ambient_light_energy = 0.55
+tonemap_mode = 2
+tonemap_exposure = 1.0
+glow_enabled = true
+glow_intensity = 0.55
+glow_strength = 1.0
+glow_bloom = 0.04
+glow_blend_mode = 1
+glow_hdr_threshold = 0.95
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_dust"]
+emission_shape = 3
+emission_box_extents = Vector3(9, 5, 7)
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 0.02
+initial_velocity_max = 0.12
+gravity = Vector3(0, 0, 0)
+scale_min = 0.4
+scale_max = 1.4
+color = Color(0.7, 0.8, 1, 0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dust"]
+render_priority = 0
+shader = ExtResource("8_spark")
+shader_parameter/intensity = 1.4
+
+[sub_resource type="QuadMesh" id="QuadMesh_dust"]
+material = SubResource("ShaderMaterial_dust")
+size = Vector2(0.025, 0.025)
+
+[node name="GameScene" type="Node3D"]
+script = ExtResource("1_game")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_space")
+
+[node name="ScreenLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, -2.2)
+light_color = Color(0.75, 0.82, 1, 1)
+light_energy = 1.6
+omni_range = 6.0
+
+[node name="Dust" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, -3)
+cast_shadow = 0
+amount = 260
+lifetime = 18.0
+preprocess = 18.0
+visibility_aabb = AABB(-10, -6, -8, 20, 12, 16)
+process_material = SubResource("ParticleProcessMaterial_dust")
+draw_pass_1 = SubResource("QuadMesh_dust")
+
+[node name="Screen" type="Node3D" parent="."]
+script = ExtResource("2_screen")
+
+[node name="Player" parent="." instance=ExtResource("3_player")]
+
+[node name="ScreenViewport" type="SubViewport" parent="."]
+disable_3d = true
+size = Vector2i(1920, 1080)
+render_target_update_mode = 4
+
+[node name="OsuScreen" type="Control" parent="ScreenViewport"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+mouse_filter = 2
+script = ExtResource("4_view")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Root" type="Control" parent="UI"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CursorLayer" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="Crosshair" type="Control" parent="CursorLayer"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+script = ExtResource("7_cursor")
+
+[node name="FlashLayer" type="CanvasLayer" parent="."]
+layer = 110
+
+[node name="Flash" type="ColorRect" parent="FlashLayer"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
